@@ -23,6 +23,8 @@ def menu():
         if opcion == "1":  # Opción para ingresar dinero
             try:
                 monto = float(input("Monto a ingresar: $ "))  # Solicita el monto a ingresar
+                if monto < 0:
+                    raise ValueError
                 nuevo_saldo = saldos.ingresar(usuario, monto)  # Llama al método para ingresar dinero
                 print(f"Nuevo saldo: ${nuevo_saldo:.2f}")  # Muestra el nuevo saldo
             except ValueError:  # Manejo de errores si el monto no es válido
