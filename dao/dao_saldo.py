@@ -1,3 +1,4 @@
+import math as math
 class SaldoDAO:
     def __init__(self):
         # Inicializa los saldos de los usuarios y sus transacciones
@@ -16,7 +17,10 @@ class SaldoDAO:
 
     def ingresar(self, usuario, monto):
         # Agrega un monto al saldo del usuario si existe
-        if usuario in self.saldos:
+        if not isinstance(monto, (int, float)) or not math.isfinite(monto) or monto <= 0:
+            print("Monto inválido. Debe ser un número positivo y finito.")
+            return None
+        elif usuario in self.saldos:
             self.saldos[usuario] += monto  # Incrementa el saldo
             # Registra la transacción en el historial
             self.transacciones[usuario].append(f"Ingreso: +${monto:.2f}")
@@ -41,20 +45,24 @@ class SaldoDAO:
 
         while True:
             try:
+               
                 # Solicita al usuario ingresar una cantidad para agregar o restar
                 cantidad = input("Ingresa la cantidad a agregar o restar (usa '-' para restar): $ ")
-                cantidad = float(cantidad)  # Convierte la entrada a un número flotante
+                cantidad = float(cantidad)
+                if cantidad > 200000 or cantidad < 0 and abs(cantidad) > saldo_actual:  # Verifica si la cantidad es válida
+                        print("Por favor, ingresa una cantidad válida entre 0 y 200000.")
+                        continue  # Solicita nuevamente la entrada
                 saldo_actual += cantidad  # Actualiza el saldo
                 self.saldos[usuario] = saldo_actual  # Guarda el saldo actualizado
-                # Registra la transacción en el historial
+                    # Registra la transacción en el historial
                 self.transacciones[usuario].append(
-                    f"Actualización manual: {'+' if cantidad >= 0 else ''}${cantidad:.2f}"
-                )
+                        f"Actualización manual: {'+' if cantidad >= 0 else ''}${cantidad:.2f}"
+                    )
                 print(f"Saldo actualizado: ${saldo_actual:.2f}")  # Muestra el saldo actualizado
                 return saldo_actual  # Devuelve el saldo actualizado
             except ValueError:
-                # Maneja errores si el usuario ingresa un valor no numérico
-                print("Por favor, ingresa un valor numérico válido.")
+                    # Maneja errores si el usuario ingresa un valor no numérico
+                    print("Por favor, ingresa un valor numérico válido.")
 
     def ver_transacciones(self, usuario):
         # Muestra el historial de transacciones de un usuario
